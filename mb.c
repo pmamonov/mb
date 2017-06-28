@@ -9,9 +9,10 @@
 int main(int argc, char **argv)
 {
 	void *m, *m1;
-	register uint64_t *p, *end, x;
+	volatile uint64_t *p;
+	register uint64_t x;
 	struct timeval tv, tv1;
-	size_t sz = SZ;
+	size_t sz = SZ, len;
 	char capt[4096];
 	char *s = capt;
 	char row[4096];
@@ -25,7 +26,7 @@ int main(int argc, char **argv)
 	gettimeofday(&tv1, NULL);				\
 	us = 1000000 * (tv1.tv_sec - tv.tv_sec);		\
 	us += (tv1.tv_usec - tv.tv_usec);			\
-	r += sprintf(r, "%10lld", (1000000 * sz / us) >> 20);	\
+	r += sprintf(r, "%10lld", (1000000ull * sz / us) >> 20);\
 	s += sprintf(s, "%10s", label);				\
 }
 
@@ -51,15 +52,54 @@ int main(int argc, char **argv)
 	memcpy(m1, m, sz);
 	finish("memcpy");
 
-	end = m + sz;
+	len = sz / sizeof(*p) / 16;
+	p = m;
 	start();
-	for (p = m; p != end; x = *p++)
-		;
+	while (len > 0) {
+		x = p[0];
+		x = p[1];
+		x = p[2];
+		x = p[3];
+		x = p[4];
+		x = p[5];
+		x = p[6];
+		x = p[7];
+		x = p[8];
+		x = p[9];
+		x = p[10];
+		x = p[11];
+		x = p[12];
+		x = p[13];
+		x = p[14];
+		x = p[15];
+		len -= 1;
+		p += 16;
+	}
 	finish("read64");
 
+	len = sz / sizeof(*p) / 16;
+	p = m;
 	start();
-	for (p = m; p != end; *p++ = x)
-		;
+	while (len > 0) {
+		p[0] = x;
+		p[1] = x;
+		p[2] = x;
+		p[3] = x;
+		p[4] = x;
+		p[5] = x;
+		p[6] = x;
+		p[7] = x;
+		p[8] = x;
+		p[9] = x;
+		p[10] = x;
+		p[11] = x;
+		p[12] = x;
+		p[13] = x;
+		p[14] = x;
+		p[15] = x;
+		len -= 1;
+		p += 16;
+	}
 	finish("write64");
 
 	printf(capt);
