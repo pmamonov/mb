@@ -81,6 +81,12 @@ int main(int argc, char **argv)
 	p = m;
 	start();
 	while (len > 0) {
+		__asm__ __volatile__ (
+			"pref    0x1e, 256(%0)\n\t"
+			"pref    0x1e, 288(%0)\n\t"
+			"pref    0x1e, 320(%0)\n\t"
+			"pref    0x1e, 352(%0)\n\t"
+			::"r" (p));
 		p[0] = x;
 		p[1] = x;
 		p[2] = x;
@@ -107,6 +113,12 @@ int main(int argc, char **argv)
 	p1 = m1;
 	start();
 	while (len > 0) {
+		__asm__ __volatile__ (
+			"pref    0x1e, 256(%0)\n\t"
+			"pref    0x1e, 288(%0)\n\t"
+			"pref    0x1e, 320(%0)\n\t"
+			"pref    0x1e, 352(%0)\n\t"
+			::"r" (p));
 		p[0] = p1[0];
 		p[1] = p1[1];
 		p[2] = p1[2];
