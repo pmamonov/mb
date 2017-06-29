@@ -9,7 +9,7 @@
 int main(int argc, char **argv)
 {
 	void *m, *m1;
-	volatile uint64_t *p;
+	volatile uint64_t *p, *p1;
 	register uint64_t x;
 	struct timeval tv, tv1;
 	size_t sz = SZ, len;
@@ -101,6 +101,33 @@ int main(int argc, char **argv)
 		p += 16;
 	}
 	finish("write64");
+
+	len = sz / sizeof(*p) / 16;
+	p = m;
+	p1 = m1;
+	start();
+	while (len > 0) {
+		p[0] = p1[0];
+		p[1] = p1[1];
+		p[2] = p1[2];
+		p[3] = p1[3];
+		p[4] = p1[4];
+		p[5] = p1[5];
+		p[6] = p1[6];
+		p[7] = p1[7];
+		p[8] = p1[8];
+		p[9] = p1[9];
+		p[10] = p1[10];
+		p[11] = p1[11];
+		p[12] = p1[12];
+		p[13] = p1[13];
+		p[14] = p1[14];
+		p[15] = p1[15];
+		len -= 1;
+		p += 16;
+		p1 += 16;
+	}
+	finish("copy64");
 
 	printf(capt);
 	printf("\n");
